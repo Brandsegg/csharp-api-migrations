@@ -1,5 +1,6 @@
 ﻿using exercise.pizzashopapi.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Numerics;
 
 namespace exercise.pizzashopapi.Data
 {
@@ -9,7 +10,7 @@ namespace exercise.pizzashopapi.Data
         public DataContext()
         {
             var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-            connectionString = configuration.GetValue<string>("ConnectionStrings:DefaultConnectionString");
+            connectionString = configuration.GetValue<string>("ConnectionStrings:DefaultConnectionString")!;
 
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -19,8 +20,12 @@ namespace exercise.pizzashopapi.Data
             //set primary of order?
 
             //seed data?
-
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Order>().HasKey(o => new { o.PizzaId, o.CustomerId });
+        }
+
         public DbSet<Pizza> Pizzas { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Order> Orders { get; set; }
